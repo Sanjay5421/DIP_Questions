@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import numpy as np
 
-# Load image
+# Loading image
 image = imread(r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_Questions\Q2_Kmeans\image.jpg")
 if image.dtype != np.uint8:
     image = (image * 255).astype(np.uint8)
