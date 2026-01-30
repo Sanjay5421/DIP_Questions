@@ -4,7 +4,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 
 # Loading image
-image = imread(r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_Questions\Q2_Kmeans\image.jpg")
+image = imread(r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_Questions\Q2_Kmeans\image.png")
 if image.dtype != np.uint8:
     image = (image * 255).astype(np.uint8)
 
@@ -12,7 +12,7 @@ if image.dtype != np.uint8:
 X = image.reshape(-1, 3)
 
 # K-means clustering
-kmeans = KMeans(n_clusters=3, random_state=0, n_init=10)
+kmeans = KMeans(n_clusters = 15, random_state=0, n_init=10)
 labels = kmeans.fit_predict(X)
 
 # Reconstruct image from centroids

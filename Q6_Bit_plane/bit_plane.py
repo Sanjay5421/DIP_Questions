@@ -1,14 +1,9 @@
-import os
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
 def process_dip_images(image_path, label):
-
-    # Image loading
-    base_dir = os.path.dirname(image_path)
-    print(f"--- Processing: {label} ---")
-    
+    # Load image as grayscale
     img = Image.open(image_path).convert('L')
     img_array = np.array(img)
 
@@ -33,12 +28,11 @@ def process_dip_images(image_path, label):
         plt.title(title)
         plt.axis('off')
 
-    save_filename = f"{label}_Full_3x3_Grid.png"
-    save_path = os.path.join(base_dir, save_filename)
-
-    plt.savefig(save_path)
+    # Save 3x3 grid
+    save_filename = f"C:\\Users\\USER\\Desktop\\College stuff\\Sem 6\\DIP\\DIP_QUESTIONS\\Q6_Bit_plane\\{label}_Full_3x3_Grid.png"
+    plt.savefig(save_filename)
     plt.close()
-    print(f"Saved 3x3 Grid to: {save_path}")
+    print(f"Saved 3x3 Grid to: {save_filename}")
 
     # Union of lower three bits
     bit0 = ((img_array >> 0) & 1) * 1
@@ -74,8 +68,8 @@ def process_dip_images(image_path, label):
 
 
 # Input
-low_light_path = r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\Bit_plane_splicing\low_light_2.jpeg"
-bright_light_path = r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\Bit_plane_splicing\bright_light_2.jpeg"
+low_light_path = r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_QUESTIONS\Q6_Bit_plane\low_light_2.jpeg"
+bright_light_path = r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_QUESTIONS\Q6_Bit_plane\bright_light_2.jpeg"
 
 process_dip_images(low_light_path, "Low_Light")
 process_dip_images(bright_light_path, "Bright_Light")

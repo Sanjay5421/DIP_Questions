@@ -1,65 +1,55 @@
 import cv2
 import numpy as np
 
+# HDR
 def create_hdr(image_files, exposure_times):
-    # 1. Load Images
     print("Loading images...")
     images = []
-    for filename in image_files:
-        img = cv2.imread(filename)
+
+    for file in image_files:
+        img = cv2.imread(file)
         if img is None:
-            print(f"Error: Could not read image {filename}")
+            print("Error loading image:", file)
             return
         images.append(img)
 
-    # Convert exposure times to numpy array (float32)
+    # Convert exposure times to numpy array
     times = np.array(exposure_times, dtype=np.float32)
 
-    # 2. Estimate Camera Response Function (CRF)
-    # The image text describes the Debevec & Malik method.
-    # OpenCV has this built-in.
-    print("Estimating Camera Response Function (Debevec)...")
+    # Camera Response Function (Debevec method)
+    print("Estimating camera response function...")
     calibrate = cv2.createCalibrateDebevec()
     response = calibrate.process(images, times)
 
-    # 3. Recover Irradiance Map (Merge)
-    # Merges images using the calculated response curve.
-    print("Merging images into Irradiance Map...")
+    # Merge images to create HDR image
+    print("Merging images to form HDR...")
     merge = cv2.createMergeDebevec()
     hdr_image = merge.process(images, times, response)
 
-    # Optional: Save the raw HDR data (floating point)
-    # cv2.imwrite("output.hdr", hdr_image)
-
-    # 4. Global Tone Mapping
-    # The formula in your image (Ld = Lm(1+Lm/Lw^2)/(1+Lm)) is exactly the Reinhard operator.
-    # OpenCV's createTonemapReinhard implements this.
-    # gamma=2.2 applies the gamma correction mentioned in your original code.
-    print("Applying Global Tone Mapping (Reinhard)...")
-    tonemap = cv2.createTonemapReinhard(gamma=2.2, intensity=0, light_adapt=0, color_adapt=0)
-    # Note: intensity=0 makes it closer to the "Global" operator described in your text.
-    # You can tweak this (e.g. intensity=1.0) if the result is too flat.
-
+    # Tone Mapping (Reinhard)
+    print("Applying tone mapping...")
+    tonemap = cv2.createTonemapReinhard(gamma=2.2, intensity = 0, light_adapt = 0, color_adapt = 0)
     ldr_image = tonemap.process(hdr_image)
 
-    # 5. Save Output
-    # The tonemap process returns 0-1 floats. Convert to 0-255 integers.
-    print("Saving output...")
-    ldr_image_8bit = np.clip(ldr_image * 255, 0, 255).astype('uint8')
-    cv2.imwrite("output_hdr_2.jpg", ldr_image_8bit)
-    print("Success! Saved as 'output_hdr.jpg'")
+    # Convert to 8-bit image and save
+    print("Saving output image...")
+    ldr_image = ldr_image * 255
+    ldr_image = np.clip(ldr_image, 0, 255)
+    ldr_image = ldr_image.astype(np.uint8)
 
-# --- USER CONFIGURATION ---
+    cv2.imwrite(r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_Questions\Q4_HDR\output_waterfall.jpg", ldr_image)
+    print("HDR image saved successfully")
+
+
+# Main 
 if __name__ == "__main__":
-    # REPLACE these with your actual filenames
-    my_images = [
-        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\Q4\Building\IMG_7189.jpg",
-        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\Q4\Building\IMG_7190.jpg",
-        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\Q4\Building\IMG_7191.jpg",
-        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\Q4\Building\IMG_7192.jpg"
+
+    image_list = [
+        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_QUESTIONS\Q4_HDR\Waterfall\Waterfall_1.jpg",
+        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_QUESTIONS\Q4_HDR\Waterfall\Waterfall_2.jpg",
+        r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_QUESTIONS\Q4_HDR\Waterfall\Waterfall_3.jpg",
     ]
 
-    # REPLACE these with the shutter speeds for each image
-    my_times = [1/4, 1, 4, 15]
+    exposure_times = [1/6, 1.3, 5]
 
-    create_hdr(my_images, my_times)
+    create_hdr(image_list, exposure_times)
