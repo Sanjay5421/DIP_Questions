@@ -1,8 +1,8 @@
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# Grayscale (Desaturation)
-def desaturate_gray(img):
+# Grayscale (Averaging)
+def average_gray(img):
     width, height = img.size
     gray_img = Image.new("L", (width, height))
 
@@ -54,7 +54,7 @@ input_path = r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_Questions\Q1_gr
 output_folder = r"C:\Users\USER\Desktop\College stuff\Sem 6\DIP\DIP_Questions\Q1_grayscale"
 
 image = Image.open(input_path).convert("RGB")
-gray_image = desaturate_gray(image)
+gray_image = average_gray(image)
 
 levels_list = [16, 8, 4, 3]
 
